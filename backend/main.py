@@ -16,6 +16,13 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
+allow_origins=[
+    "http://localhost:5173",
+    "https://qr-attend-rose.vercel.app",
+],
+
+
+
 # Connect to Supabase
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_ANON_KEY")
@@ -118,7 +125,7 @@ def create_session(data: SessionCreate):
 
 
 @app.get("/api/sessions/{session_id}/qr")
-def get_qr_code(session_id: str, base_url: str = "http://localhost:5173"):
+def get_qr_code(session_id: str, base_url: str = "https://qr-attend-rose.vercel.app"):
     """Generate a QR code image for a session."""
     
     # Fetch the session

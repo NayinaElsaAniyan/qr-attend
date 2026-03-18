@@ -1,3 +1,4 @@
+import { API } from '../lib/api'
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -23,7 +24,7 @@ export default function NotesPage() {
 
   async function fetchNotes() {
     try {
-      const res = await fetch(`/api/notes/class/${classId}`)
+      const res = await fetch(`${API}/notes/class/${classId}`)
       const data = await res.json()
       setNotes(data)
     } catch (err) {
@@ -36,7 +37,7 @@ export default function NotesPage() {
   async function createNote(e) {
     e.preventDefault()
     try {
-      const res = await fetch('/api/notes', {
+      const res = await fetch(`${API}/notes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -59,7 +60,7 @@ export default function NotesPage() {
 
   async function updateNote(noteId) {
     try {
-      const res = await fetch(`/api/notes/${noteId}`, {
+      const res = await fetch(`${API}/notes/${noteId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -81,7 +82,7 @@ export default function NotesPage() {
   async function deleteNote(noteId) {
     if (!confirm('Delete this note?')) return
     try {
-      await fetch(`/api/notes/${noteId}`, { method: 'DELETE' })
+      await fetch(`${API}/notes/${noteId}`, { method: 'DELETE' })
       toast.success('Note deleted')
       fetchNotes()
     } catch (err) {

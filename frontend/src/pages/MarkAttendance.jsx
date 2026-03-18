@@ -1,3 +1,4 @@
+import { API } from '../lib/api'
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
@@ -13,7 +14,7 @@ export default function MarkAttendance() {
     e.preventDefault()
     setStatus('loading')
     try {
-      const res = await fetch('/api/attendance/mark', {
+      const res = await fetch(`${API}/attendance/mark`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

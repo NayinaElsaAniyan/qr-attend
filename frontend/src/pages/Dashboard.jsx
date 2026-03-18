@@ -1,3 +1,4 @@
+import { API } from '../lib/api'
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -38,7 +39,7 @@ export default function Dashboard() {
 
   async function fetchClasses() {
     try {
-      const res = await fetch("/api/classes");
+      const res = await fetch(`${API}/api/classes`);
       const data = await res.json();
       setClasses(data);
     } catch (err) {
@@ -50,7 +51,7 @@ export default function Dashboard() {
 
   async function fetchAnalytics(classId) {
     try {
-      const res = await fetch(`/api/analytics/class/${classId}`);
+      const res = await fetch(`${API}/analytics/class/${classId}`);
       const data = await res.json();
       setAnalytics((prev) => ({ ...prev, [classId]: data }));
     } catch (err) {
@@ -60,7 +61,7 @@ export default function Dashboard() {
 
   async function fetchAlerts(classId) {
     try {
-      const res = await fetch(`/api/alerts/class/${classId}?threshold=3`);
+      const res = await fetch(`${API}/alerts/class/${classId}?threshold=3`);
       const data = await res.json();
       setAlerts((prev) => ({ ...prev, [classId]: data }));
     } catch (err) {
@@ -71,7 +72,7 @@ export default function Dashboard() {
   async function createClass(e) {
     e.preventDefault();
     try {
-      const res = await fetch("/api/classes", {
+      const res = await fetch(`${API}/classes`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newClass),
@@ -89,7 +90,7 @@ export default function Dashboard() {
 
   async function startSession(classId) {
     try {
-      const res = await fetch("/api/sessions", {
+      const res = await fetch(`${API}/sessions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ class_id: classId, expiry_minutes: 2 }),
@@ -102,7 +103,7 @@ export default function Dashboard() {
   }
 
   function exportAll(classId) {
-    window.open(`/api/attendance/export-all/class/${classId}`, "_blank");
+    window.open(`${API}/attendance/export-all/class/${classId}`, "_blank");
     toast.success("Exporting all attendance...");
   }
 

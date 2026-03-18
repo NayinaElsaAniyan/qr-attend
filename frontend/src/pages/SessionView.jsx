@@ -1,3 +1,4 @@
+import { API } from '../lib/api'
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -63,7 +64,7 @@ export default function SessionView() {
 
   async function fetchQR() {
     try {
-      const res = await fetch(`/api/sessions/${sessionId}/qr`)
+      const res = await fetch(`${API}/sessions/${sessionId}/qr`)
       const data = await res.json()
       setQrData(data)
     } catch (err) {
@@ -73,7 +74,7 @@ export default function SessionView() {
 
   async function fetchAttendance() {
     try {
-      const res = await fetch(`/api/attendance/session/${sessionId}`)
+      const res = await fetch(`${API}/attendance/session/${sessionId}`)
       const data = await res.json()
       setAttendance(data)
     } catch (err) {
@@ -82,7 +83,7 @@ export default function SessionView() {
   }
 
   function exportCSV() {
-    window.open(`/api/attendance/export/${sessionId}`, '_blank')
+    window.open(`${API}/attendance/export/${sessionId}`, '_blank')
     toast.success('CSV downloading...')
   }
 
