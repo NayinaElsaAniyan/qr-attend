@@ -18,13 +18,7 @@ load_dotenv()
 
 
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+
 
 
 
@@ -40,11 +34,13 @@ app = FastAPI(
     version="1.0.0"
 )
 
+
+
 # CORS: Allow your frontend to talk to this backend
 # Without this, the browser blocks requests from localhost:5173 to localhost:8000
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Vite's default port
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
