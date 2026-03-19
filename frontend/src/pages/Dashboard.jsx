@@ -34,12 +34,15 @@ console.log("FULL URL:", `${API}/api/classes`);
 
   // After classes load, fetch analytics + alerts for each
   useEffect(() => {
-    classes.forEach((cls) => {
-      fetchAnalytics(cls.id);
-      fetchAlerts(cls.id);
-    });
-  }, [classes]);
-
+  classes.forEach((cls) => {
+    if (!analytics[cls.id]) {
+      fetchAnalytics(cls.id)
+    }
+    if (!alerts[cls.id]) {
+      fetchAlerts(cls.id)
+    }
+  })
+}, [classes])
   async function fetchClasses() {
     try {
       const res = await fetch(`${API}/api/classes`);
