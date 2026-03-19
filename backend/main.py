@@ -269,50 +269,60 @@ def export_csv(session_id: str):
 
 @app.get("/api/analytics/class/{class_id}")
 def class_analytics(class_id: str):
-    """Get attendance stats and trend data for a class."""
 
-    # Get all sessions for this class
-    sessions = supabase.table("sessions") \
-        .select("id, created_at") \
-        .eq("class_id", class_id) \
-        .order("created_at") \
-        .execute()
+    try:
+    
 
-    # For each session, count attendance
-    trend = []
-    total_attendance = 0
-    for session in sessions.data:
-        count_res = supabase.table("attendance") \
-            .select("id", count="exact") \
-            .eq("session_id", session["id"]) \
+        # Get all sessions for this class
+        sessions = supabase.table("sessions") \
+            .select("id, created_at") \
+            .eq("class_id", class_id) \
+            .order("created_at") \
             .execute()
-        count = count_res.count if count_res.count else 0
-        total_attendance += count
-        trend.append({
-            "session_id": session["id"],
-            "date": session["created_at"][:10],
-            "count": count
-        })
 
-    total_sessions = len(sessions.data)
-    avg_attendance = round(total_attendance / total_sessions, 1) if total_sessions > 0 else 0
+        # For each session, count attendance
+        trend = []
+        total_attendance = 0
+        for session in sessions.data:
+            count_res = supabase.table("attendance") \
+                .select("id", count="exact") \
+                .eq("session_id", session["id"]) \
+                .execute()
+            count = count_res.count if count_res.count else 0
+            total_attendance += count
+            trend.append({
+                "session_id": session["id"],
+                "date": session["created_at"][:10],
+                "count": count
+            })
 
-    # Get unique students who have ever attended this class
-    all_student_emails = set()
-    for session in sessions.data:
-        att = supabase.table("attendance") \
-            .select("student_email") \
-            .eq("session_id", session["id"]) \
-            .execute()
-        for record in att.data:
-            all_student_emails.add(record["student_email"])
+        total_sessions = len(sessions.data)
+        avg_attendance = round(total_attendance / total_sessions, 1) if total_sessions > 0 else 0
 
-    return {
-        "total_sessions": total_sessions,
-        "total_unique_students": len(all_student_emails),
-        "average_attendance": avg_attendance,
-        "trend": trend
-    }
+        # Get unique students who have ever attended this class
+        all_student_emails = set()
+        for session in sessions.data:
+            att = supabase.table("attendance") \
+                .select("student_email") \
+                .eq("session_id", session["id"]) \
+                .execute()
+            for record in att.data:
+                all_student_emails.add(record["student_email"])
+
+        return {
+            "total_sessions": total_sessions,
+            "total_unique_students": len(all_student_emails),
+            "average_attendance": avg_attendance,
+            "trend": trend
+        }
+    except Exception as e:
+        print(f"Analytics error: {e}")
+        return {
+            "total_sessions": 0,
+            "total_unique_students": 0,
+            "average_attendance": 0,
+            "trend": []
+        }
 # ========== EXPORT ALL ==========
 
 @app.get("/api/attendance/export-all/class/{class_id}")
@@ -356,47 +366,51 @@ def export_all_csv(class_id: str):
 
 @app.get("/api/alerts/class/{class_id}")
 def low_attendance_alerts(class_id: str, threshold: int = 3):
-    sessions = supabase.table("sessions") \
-        .select("id") \
-        .eq("class_id", class_id) \
-        .execute()
-
-    if not sessions.data:
-        return {"alerts": [], "total_sessions": 0}
-
-    total_sessions = len(sessions.data)
-    session_ids = [s["id"] for s in sessions.data]
-
-    student_counts = {}
-    for sid in session_ids:
-        att = supabase.table("attendance") \
-            .select("student_email, student_name") \
-            .eq("session_id", sid) \
+    try:
+        sessions = supabase.table("sessions") \
+            .select("id") \
+            .eq("class_id", class_id) \
             .execute()
-        for record in att.data:
-            email = record["student_email"]
-            if email not in student_counts:
-                student_counts[email] = {
-                    "name": record["student_name"],
-                    "email": email,
-                    "attended": 0
-                }
-            student_counts[email]["attended"] += 1
 
-    alerts = []
-    for email, data in student_counts.items():
-        missed = total_sessions - data["attended"]
-        if missed >= threshold:
-            alerts.append({
-                "student_name": data["name"],
-                "student_email": email,
-                "attended": data["attended"],
-                "missed": missed,
-                "total_sessions": total_sessions
-            })
+        if not sessions.data:
+            return {"alerts": [], "total_sessions": 0}
 
-    alerts.sort(key=lambda x: x["missed"], reverse=True)
-    return {"alerts": alerts, "total_sessions": total_sessions}
+        total_sessions = len(sessions.data)
+        session_ids = [s["id"] for s in sessions.data]
+
+        student_counts = {}
+        for sid in session_ids:
+            att = supabase.table("attendance") \
+                .select("student_email, student_name") \
+                .eq("session_id", sid) \
+                .execute()
+            for record in att.data:
+                email = record["student_email"]
+                if email not in student_counts:
+                    student_counts[email] = {
+                        "name": record["student_name"],
+                        "email": email,
+                        "attended": 0
+                    }
+                student_counts[email]["attended"] += 1
+
+        alerts = []
+        for email, data in student_counts.items():
+            missed = total_sessions - data["attended"]
+            if missed >= threshold:
+                alerts.append({
+                    "student_name": data["name"],
+                    "student_email": email,
+                    "attended": data["attended"],
+                    "missed": missed,
+                    "total_sessions": total_sessions
+                })
+
+        alerts.sort(key=lambda x: x["missed"], reverse=True)
+        return {"alerts": alerts, "total_sessions": total_sessions}
+    except Exception as e:
+        print(f"Alerts error: {e}")
+        return {"alerts": [], "total_sessions": 0}
 
 
 # ========== NOTES ==========
