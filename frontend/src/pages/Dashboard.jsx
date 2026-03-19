@@ -25,6 +25,9 @@ export default function Dashboard() {
   const [analytics, setAnalytics] = useState({}); // per-class analytics
   const [alerts, setAlerts] = useState({}); // per-class alerts
 
+  console.log("API:", API);
+console.log("FULL URL:", `${API}/api/classes`);
+
   useEffect(() => {
     fetchClasses();
   }, []);
