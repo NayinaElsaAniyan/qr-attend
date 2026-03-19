@@ -17,7 +17,7 @@ export default function HistoryPage() {
 
   async function fetchHistory() {
     try {
-      const res = await fetch(`${API}/sessions/history/${classId}`)
+      const res = await fetch(`${API}/api/sessions/history/${classId}`)
       const data = await res.json()
       setSessions(data)
     } catch (err) {
@@ -28,7 +28,7 @@ export default function HistoryPage() {
   }
 
   function exportSession(sessionId) {
-    window.open(`${API}/attendance/export/${sessionId}`, '_blank')
+    window.open(`${API}/api/attendance/export/${sessionId}`, '_blank')
     toast.success('CSV downloading...')
   }
 

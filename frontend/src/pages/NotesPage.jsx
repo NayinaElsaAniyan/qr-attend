@@ -24,7 +24,7 @@ export default function NotesPage() {
 
   async function fetchNotes() {
     try {
-      const res = await fetch(`${API}/notes/class/${classId}`)
+      const res = await fetch(`${API}/api/notes/class/${classId}`)
       const data = await res.json()
       setNotes(data)
     } catch (err) {
@@ -37,7 +37,7 @@ export default function NotesPage() {
   async function createNote(e) {
     e.preventDefault()
     try {
-      const res = await fetch(`${API}/notes`, {
+      const res = await fetch(`${API}/api/notes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -60,7 +60,7 @@ export default function NotesPage() {
 
   async function updateNote(noteId) {
     try {
-      const res = await fetch(`${API}/notes/${noteId}`, {
+      const res = await fetch(`${API}/api/notes/${noteId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -82,7 +82,7 @@ export default function NotesPage() {
   async function deleteNote(noteId) {
     if (!confirm('Delete this note?')) return
     try {
-      await fetch(`${API}/notes/${noteId}`, { method: 'DELETE' })
+      await fetch(`${API}/api/notes/${noteId}`, { method: 'DELETE' })
       toast.success('Note deleted')
       fetchNotes()
     } catch (err) {

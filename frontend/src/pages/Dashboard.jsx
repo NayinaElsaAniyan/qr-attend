@@ -54,7 +54,7 @@ console.log("FULL URL:", `${API}/api/classes`);
 
   async function fetchAnalytics(classId) {
     try {
-      const res = await fetch(`${API}/analytics/class/${classId}`);
+      const res = await fetch(`${API}/api/analytics/class/${classId}`);
       const data = await res.json();
       setAnalytics((prev) => ({ ...prev, [classId]: data }));
     } catch (err) {
@@ -64,7 +64,7 @@ console.log("FULL URL:", `${API}/api/classes`);
 
   async function fetchAlerts(classId) {
     try {
-      const res = await fetch(`${API}/alerts/class/${classId}?threshold=3`);
+      const res = await fetch(`${API}/api/alerts/class/${classId}?threshold=3`);
       const data = await res.json();
       setAlerts((prev) => ({ ...prev, [classId]: data }));
     } catch (err) {
@@ -75,7 +75,7 @@ console.log("FULL URL:", `${API}/api/classes`);
   async function createClass(e) {
     e.preventDefault();
     try {
-      const res = await fetch(`${API}/classes`, {
+      const res = await fetch(`${API}/api/classes`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newClass),
@@ -93,7 +93,7 @@ console.log("FULL URL:", `${API}/api/classes`);
 
   async function startSession(classId) {
     try {
-      const res = await fetch(`${API}/sessions`, {
+      const res = await fetch(`${API}/api/sessions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ class_id: classId, expiry_minutes: 2 }),
@@ -106,7 +106,7 @@ console.log("FULL URL:", `${API}/api/classes`);
   }
 
   function exportAll(classId) {
-    window.open(`${API}/attendance/export-all/class/${classId}`, "_blank");
+    window.open(`${API}/api/attendance/export-all/class/${classId}`, "_blank");
     toast.success("Exporting all attendance...");
   }
 

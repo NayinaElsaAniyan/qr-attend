@@ -14,7 +14,7 @@ export default function MarkAttendance() {
     e.preventDefault()
     setStatus('loading')
     try {
-      const res = await fetch(`${API}/attendance/mark`, {
+      const res = await fetch(`${API}/api/attendance/mark`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
