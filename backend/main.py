@@ -16,10 +16,15 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-allow_origins=[
-    "http://localhost:5173",
-    "https://qr-attend-rose.vercel.app",
-],
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 
